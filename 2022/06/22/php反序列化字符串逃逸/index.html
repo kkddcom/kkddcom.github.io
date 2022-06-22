@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="产生原理 当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞 对于php反序列化字符逃逸 可以分为一下两种情况进行讨论 过滤后字符变多 过滤后字符变少 先来看一下过滤后字符变多的情况1234567891011 class user&amp;#123;public $username;public $password;public">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="c:/Users/kangkang/AppData/Roaming/Typora/typora-user-images/1655686721009.png">
+<meta property="og:image" content="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg">
 <meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb02bbee76c99777.png">
 <meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb06d3f49c802d31.png">
 <meta property="og:image" content="https://image.3001.net/images/20210824/1629789872_61249eb0ac0a40a44c51a.png">
-<meta property="og:image" content="c:/Users/kangkang/AppData/Roaming/Typora/typora-user-images/1655688862893.png">
+<meta property="og:image" content="https://tvax2.sinaimg.cn/large/006nKnK0ly1h3h4e6hqv6j31qp10g4ci.jpg">
 <meta property="article:published_time" content="2022-06-22T06:33:30.321Z">
-<meta property="article:modified_time" content="2022-06-21T05:16:17.350Z">
+<meta property="article:modified_time" content="2022-06-22T08:52:41.460Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="c:/Users/kangkang/AppData/Roaming/Typora/typora-user-images/1655686721009.png">
+<meta name="twitter:image" content="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -153,7 +153,7 @@
 <p>然后我们验证一下我们刚才的做法</p>
 <p>我们把序列化后的东西反序列化一下看看结果</p>
 <p>这样我们就成功的把isvip改为1了</p>
-<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1655686721009.png" alt="1655686721009"></p>
+<p><img src="https://tva3.sinaimg.cn/large/006nKnK0ly1h3h4bhebqlj31wa11fwwt.jpg" alt="1655686721009"></p>
 <h2 id="接下来我们看过滤后字符串变少的情况"><a href="#接下来我们看过滤后字符串变少的情况" class="headerlink" title="接下来我们看过滤后字符串变少的情况"></a>接下来我们看过滤后字符串变少的情况</h2><p>这里只是把hacker改为了hack</p>
 <p>代码如下</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user</span></span>&#123;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="variable">$isVIP</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$u</span>,<span class="variable">$p</span></span>)</span>&#123;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;username = <span class="variable">$u</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;password = <span class="variable">$p</span>;</span><br><span class="line"><span class="variable language_">$this</span>-&gt;isVIP = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$s</span></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;hack&quot;</span>,<span class="variable">$s</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">user</span>(<span class="string">&#x27;admin&#x27;</span>,<span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"><span class="variable">$a_seri</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$a_seri_filter</span> = <span class="title function_ invoke__">filter</span>(<span class="variable">$a_seri</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a_seri_filter</span>;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
@@ -202,12 +202,12 @@
 
 <p> <img src="https://image.3001.net/images/20210824/1629789872_61249eb0ac0a40a44c51a.png" alt="img"> </p>
 <p>验证一下</p>
-<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1655688862893.png" alt="1655688862893"></p>
+<p><img src="https://tvax2.sinaimg.cn/large/006nKnK0ly1h3h4e6hqv6j31qp10g4ci.jpg" alt="1655688862893"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" data-id="cl4p939ym0001j8tu776yc4pn" data-title="" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" data-id="cl4pcy2bs0003zwtu0yo139e6" data-title="" class="article-share-link">Share</a>
       
       
       
@@ -216,15 +216,6 @@
   
     
 <nav id="article-nav">
-  
-    <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B81/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          (no title)
-        
-      </div>
-    </a>
   
   
     <a href="/2022/06/22/testphp1-md/" id="article-nav-older" class="article-nav-link-wrap">
@@ -265,10 +256,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B81/">(no title)</a>
-          </li>
         
           <li>
             <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/">(no title)</a>
