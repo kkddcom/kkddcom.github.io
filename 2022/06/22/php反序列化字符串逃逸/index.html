@@ -9,7 +9,7 @@
   <meta name="description" content="产生原理 当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞 对于php反序列化字符逃逸 可以分为一下两种情况进行讨论 过滤后字符变多 过滤后字符变少 先来看一下过滤后字符变多的情况1234567891011 class user&amp;#123;public $username;public $password;public">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/index.html">
+<meta property="og:url" content="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="产生原理 当开发者先将对象序列化，然后对序列化后的字符串进行过滤过滤，最后在进行反序列化。这个时候可能会产生php发序列化字符串逃逸的漏洞 对于php反序列化字符逃逸 可以分为一下两种情况进行讨论 过滤后字符变多 过滤后字符变少 先来看一下过滤后字符变多的情况1234567891011 class user&amp;#123;public $username;public $password;public">
 <meta property="og:locale" content="en_US">
@@ -79,9 +79,9 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-php反序列化字符串逃逸/php反序列化字符串逃逸" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-php反序列化字符串逃逸" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" class="article-date">
+    <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" class="article-date">
   <time class="dt-published" datetime="2022-06-22T06:33:30.321Z" itemprop="datePublished">2022-06-22</time>
 </a>
     
@@ -207,7 +207,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" data-id="cl4p8uaa400034stu1aaj42ui" data-title="" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/" data-id="cl4p90r3v0001igtu1uftc547" data-title="" class="article-share-link">Share</a>
       
       
       
@@ -216,6 +216,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B81/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
   
   
     <a href="/2022/06/22/testphp1-md/" id="article-nav-older" class="article-nav-link-wrap">
@@ -258,7 +267,11 @@
       <ul>
         
           <li>
-            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/">(no title)</a>
+            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B81/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/22/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8/">(no title)</a>
           </li>
         
           <li>
