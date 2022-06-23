@@ -210,7 +210,12 @@
 <p>conver.base64-encode&amp;decode						等同于base64_encode()和decode</p>
 <p>  convert.quoted-printable-encode &amp; convert.quoted-printable-decode （这个没怎见过，毕竟我是菜狗） </p>
 <p> 实例</p>
-<p>php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;filexieyi.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test2.localhost.com/phpweixieyi/file.php?file=php://filter/read=convert.base64-encode/resource=../filexieyi.php</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以读文件源码了（针对php文件需要base64编码）</p>
+<p><img src="https://tva4.sinaimg.cn/large/006nKnK0ly1h3iyiebi6lj30yh07j41h.jpg" alt="1656025172054"></p>
+<p>php:&#x2F;&#x2F;input + [POST DATA]执行php代码</p>
+<p>比如</p>
 
                 <hr>
                 
