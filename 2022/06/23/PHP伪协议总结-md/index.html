@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        11.md｜undefined
+        PHP伪协议总结.md｜undefined
         
     </title>
 
-    <link rel="canonical" href="http://example.com/2022/06/23/11-md/">
+    <link rel="canonical" href="http://example.com/2022/06/23/PHP伪协议总结-md/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -143,7 +143,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>11.md</h1>
+                    <h1>PHP伪协议总结.md</h1>
                     
                     <span class="meta">
                          作者 John Doe
@@ -160,7 +160,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            11.md
+            PHP伪协议总结.md
         </span>
     </div>
 </header>
@@ -171,21 +171,56 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                
+                <h2 id="file-x2F-x2F-协议"><a href="#file-x2F-x2F-协议" class="headerlink" title="file:&#x2F;&#x2F;协议"></a>file:&#x2F;&#x2F;协议</h2><p>用于访问本地文件系统，在ctf中通常来读取本地文件的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/include.php?file=file://E:\phpStudy\PHPTutorial\WWW\phpinfo.txt</span><br></pre></td></tr></table></figure>
+
+<p> <code>file://</code> 文件系统是 PHP 使用的默认封装协议，展现了本地文件系统。当指定了一个相对路径（不以&#x2F;、\、\或 Windows 盘符开头的路径）提供的路径将基于当前的工作目录。在很多情况下是脚本所在的目录，除非被修改了 </p>
+<p>首先这里的协议要的脚本必须要有</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include</span>()/<span class="keyword">require</span>()/<span class="keyword">include_once</span>()/<span class="keyword">require_once</span>() </span><br></pre></td></tr></table></figure>
+
+<p>展示一下</p>
+<p><img src="https://tva4.sinaimg.cn/large/006nKnK0ly1h3ik7r5kgmj31yg14v1kx.jpg" alt="1655995450118"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://test2.localhost.com/phpweixieyi/file.php?file=file://D:\phpstudy_pro\WWW\filexieyi.txt</span><br></pre></td></tr></table></figure>
+
+<p>可以看一下源代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line"><span class="keyword">include</span> (<span class="variable">$a</span>);</span><br></pre></td></tr></table></figure>
+
+<p>还有filexieyi.txt</p>
+<p><img src="https://tvax3.sinaimg.cn/large/006nKnK0ly1h3ikc6zqitj317m0wq13a.jpg" alt="1655995626111"></p>
+<p>刚才我们说了 <code>include()/require()/include_once()/require_once()</code>参数可控的情况下，如导入为非<code>.php</code>文件，则仍按照php语法进行解析  所以我们这里的txt文件也可以执行php脚本</p>
+<h2 id="php-x2F-x2F-协议"><a href="#php-x2F-x2F-协议" class="headerlink" title="php:&#x2F;&#x2F;协议"></a>php:&#x2F;&#x2F;协议</h2><p>条件：</p>
+<p>allow_url_fopen:off&#x2F;on</p>
+<p>allow_url_include: 不太懂这个是干嘛的</p>
+<p>看php:&#x2F;&#x2F;协议的作用吧</p>
+<p>php:&#x2F;&#x2F;访问各个输入&#x2F;输出流（I&#x2F;O streams），在ctf中经常使用的是php:&#x2F;&#x2F;filter和php:&#x2F;&#x2F;input,php:&#x2F;&#x2F;filter用于读取源码，php:&#x2F;&#x2F;input用于执行php代码</p>
+<p>php:&#x2F;&#x2F;filter参数详解</p>
+<p>该协议的参数会在改协议路径上进行传递，多个参数都可以在一个路径上传递。</p>
+<p>php:&#x2F;&#x2F;filter参数                                    描述                                 </p>
+<p>resource&#x3D;&lt;要过滤的数据流&gt;             必须选项。它指定了你要筛选过滤的数据流</p>
+<p>read&#x3D;&lt;读链的过滤器&gt;                         可选项。可以设定一个或多个过滤器名称</p>
+<p>write&#x3D;&lt;写链的过滤器&gt;                         可选项.可以设定一个或多个过滤器名称</p>
+<p>&lt;;两个链的过滤器&gt;                             任何没有以read&#x3D;或write&#x3D;作为前缀的筛选器列表会视情况应用于读或写链</p>
+<p>可用的过滤器</p>
+<p>字符串过滤器                                作用</p>
+<p>string.rot13            						等同于str_rot13(),rot13变换</p>
+<p>string.toupper                            等同于stroupper()，转大写字母</p>
+<p>string.tolower                              等同于strolower(),转小写字母</p>
+<p>string.strip_tags                          等同于strip_tags(),去除html、php语言标签</p>
+<p>转换过滤器                                                              作用</p>
+<p>conver.base64-encode&amp;decode						等同于base64_encode()和decode</p>
+<p>  convert.quoted-printable-encode &amp; convert.quoted-printable-decode （这个没怎见过，毕竟我是菜狗） </p>
+<p> 实例</p>
+<p>php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;filexieyi.txt</p>
+
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2022/06/23/EIS2012pop-md/" data-toggle="tooltip" data-placement="top"
-                           title="EIS2012pop.md">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2022/06/22/php绕过wakeup函数漏洞-md/" data-toggle="tooltip" data-placement="top"
-                           title="php绕过wakeup函数漏洞.md">Next Post &rarr;</a>
+                        <a href="/2022/06/23/EIS2012pop-md/" data-toggle="tooltip" data-placement="top"
+                           title="EIS2012pop.md">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -204,7 +239,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#file-x2F-x2F-%E5%8D%8F%E8%AE%AE"><span class="toc-text">file:&#x2F;&#x2F;协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php-x2F-x2F-%E5%8D%8F%E8%AE%AE"><span class="toc-text">php:&#x2F;&#x2F;协议</span></a></li></ol>
                 </div>
             </div>
         </div>
