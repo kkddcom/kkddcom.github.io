@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        buu-upload简单题.md｜undefined
+        
+    </title>
+
+    <link rel="canonical" href="http://example.com/2022/07/01/buu-upload简单题-md/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Hexo
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>buu-upload简单题.md</h1>
+                    
+                    <span class="meta">
+                         作者 John Doe
+                        <span>
+                          日期 2022-07-01
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            buu-upload简单题.md
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="ACTF2020-新生赛-Upload"><a href="#ACTF2020-新生赛-Upload" class="headerlink" title="[ACTF2020 新生赛]Upload"></a>[ACTF2020 新生赛]Upload</h1><p>打开之后尝试上传一个shell</p>
+<p>然后发现</p>
+<p><img src="http://tvax3.sinaimg.cn/large/006nKnK0ly1h3rjl3ndy0j30mf08k75q.jpg" alt="1656662471666"></p>
+<p>这个看起来像js前端验证</p>
+<p>我们可以 f12  f1 来禁用js</p>
+<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1656662549364.png" alt="1656662549364"></p>
+<p>然后burp抓包看一下</p>
+<p><img src="http://tva2.sinaimg.cn/large/006nKnK0ly1h3rjlj2zl0j30n80hr4g5.jpg" alt="1656662615216"></p>
+<p>显示这个东西</p>
+<p>然后我们后端改一下文件名 试试apache解析漏洞</p>
+<p>然后发现上传成功了 </p>
+<p><img src="http://tva2.sinaimg.cn/large/006nKnK0ly1h3rjlyxgynj31z40zgnpd.jpg" alt="1656662687165"></p>
+<p>看一看有没有被解析成php文件</p>
+<p><img src="http://tva1.sinaimg.cn/large/006nKnK0ly1h3rjmjkkejj31ff0zhn6u.jpg" alt="1656662742711"></p>
+<p>发现解析成功</p>
+<h1 id="MRCTF2020-你传你🐎呢"><a href="#MRCTF2020-你传你🐎呢" class="headerlink" title="[MRCTF2020]你传你🐎呢"></a>[MRCTF2020]你传你🐎呢</h1><p>打开发现可以上传文件</p>
+<p>经过好多测试发现改文件名和mime都不行</p>
+<p>试一下apache解析漏洞 上传一个配置文件</p>
+<p>htaccess文件</p>
+<p>里面的内容为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddType application/x-httpd-php .l33t</span><br></pre></td></tr></table></figure>
+
+<p>这个得意思是把后缀为.l33t得文件当成php文件来解析</p>
+<p>抓包上传一下试试</p>
+<p><img src="http://tva1.sinaimg.cn/large/006nKnK0ly1h3rjnlb5ifj31e10i40yf.jpg" alt="1656664635046"></p>
+<p>没有上传成功 </p>
+<p>那改一下mime类型把</p>
+<p><img src="http://tva1.sinaimg.cn/large/006nKnK0ly1h3rjo4sc87j31ux0hon3y.jpg" alt="1656664685815"></p>
+<p>发现上传成功</p>
+<p>然后我们就上传以.l33t文件后缀名得木马</p>
+<p><img src="http://tva3.sinaimg.cn/large/006nKnK0ly1h3rjogioh3j31nd0k7jyu.jpg" alt="1656664803376"></p>
+<p>上传成功 </p>
+<p>访问一下把</p>
+<p>看啊看看有没有被解析成php文件</p>
+<p><img src="http://tvax4.sinaimg.cn/large/006nKnK0ly1h3rjox7fjjj31uk11vb0r.jpg" alt="1656664873637"></p>
+<p>发现被解析成php文件了</p>
+<p>但是在我们寻找flag得时候发现他不在根目录i下？</p>
+<p><img src="http://tva3.sinaimg.cn/large/006nKnK0ly1h3rjpak116j31z40z2dqh.jpg" alt="1656664927115"></p>
+<p>算了 蚁剑练一下吧</p>
+<p><img src="http://tvax4.sinaimg.cn/large/006nKnK0ly1h3rjps5a92j31eu0uodya.jpg" alt="1656664964735"></p>
+<p>但是发现它就在根目录下啊</p>
+<p>有点乌龙</p>
+<p>不管了小问题 反正找到flag了</p>
+<h1 id="GXYCTF2019-BabyUpload"><a href="#GXYCTF2019-BabyUpload" class="headerlink" title="[GXYCTF2019]BabyUpload"></a>[GXYCTF2019]BabyUpload</h1><p>看到上传文件应该就是文件上传漏洞了</p>
+<p>老规矩先试一下平常得shell看看有什么需要改改得</p>
+<p>burp抓包看看</p>
+<p><img src="http://tva1.sinaimg.cn/large/006nKnK0ly1h3rjq5gj3ij31lx0hpn4d.jpg" alt="1656665596633"></p>
+<p>发现这里说不能能又ph什么东西</p>
+<p>然后我突然想到能不能用.htaccess配置文件来得到flag</p>
+<p>说干就干上传一个.htaccess配置文件把</p>
+<p><img src="http://tva2.sinaimg.cn/large/006nKnK0ly1h3rjqeskszj31f10bxafa.jpg" alt="1656665716473"></p>
+<p>他这里说上传类型也太露骨了把  我们改一下mime类型</p>
+<p>其实就算它这里不这么说也应该这里把mime类型改一下得  </p>
+<p>ok发现上传成功</p>
+<p><img src="http://tva4.sinaimg.cn/large/006nKnK0ly1h3rjqp732mj31p20ixgtb.jpg" alt="1656665786968"></p>
+<p>然后呢</p>
+<p>我们在上传一个.l33t格式得shell 因为我.htaccess里面就是写的把.l33t格式得文件当作php文件来解析</p>
+<p>这里同时也改一下mime类型</p>
+<p><img src="http://tva4.sinaimg.cn/large/006nKnK0ly1h3rjqzqe4yj31re0ijn4l.jpg" alt="1656665981478"></p>
+<p>发现还是不行</p>
+<p>然后嘞 咋办呢</p>
+<p>之前看到过这样一句话 这个东西感觉以后还是要学习学习得</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php5环境可以利用script绕过标签限制</span><br></pre></td></tr></table></figure>
+
+<p>他的意思就是用这个东西来绕过</p>
+  <script language='php'>assert($_REQUEST['cmd'])</script>  
+
+<p>这样也可是php文件</p>
+<p><img src="http://tva4.sinaimg.cn/large/006nKnK0ly1h3rjre9or8j31tj0jgwnm.jpg" alt="1656666223778"></p>
+<p>上传成功！</p>
+<p><img src="http://tvax1.sinaimg.cn/large/006nKnK0ly1h3rjrrrgioj31z412fhd3.jpg" alt="1656666300916"></p>
+<p>被解析成php代码了</p>
+<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1656666332180.png" alt="1656666332180"></p>
+<p>但是我使用system命令得时候它报错了 应该是不可以使用system 被禁止了</p>
+<p>我没有系统得学习过linux命令 这个难倒我了</p>
+<p>然后上午搜了下wp也可以使用show_source命令查看flag文件</p>
+<p><img src="http://tvax3.sinaimg.cn/large/006nKnK0ly1h3rjs5gi4lj31120zw10s.jpg" alt="1656666442841"></p>
+<p>看来也得学学linux基础操作命令了</p>
+<p>但是蚁剑还是非常牛逼得</p>
+<p>直接就可以连上</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2022/06/27/uploadlab-md/" data-toggle="tooltip" data-placement="top"
+                           title="uploadlab.md">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ACTF2020-%E6%96%B0%E7%94%9F%E8%B5%9B-Upload"><span class="toc-text">[ACTF2020 新生赛]Upload</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MRCTF2020-%E4%BD%A0%E4%BC%A0%E4%BD%A0%F0%9F%90%8E%E5%91%A2"><span class="toc-text">[MRCTF2020]你传你🐎呢</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GXYCTF2019-BabyUpload"><span class="toc-text">[GXYCTF2019]BabyUpload</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hexo 2022
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://example.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>
