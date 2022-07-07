@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        ssrf.md｜undefined
+        
+    </title>
+
+    <link rel="canonical" href="http://example.com/2022/07/02/ssrf-md/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Hexo
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>ssrf.md</h1>
+                    
+                    <span class="meta">
+                         作者 John Doe
+                        <span>
+                          日期 2022-07-02
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            ssrf.md
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="ssrf基础知识"><a href="#ssrf基础知识" class="headerlink" title="ssrf基础知识"></a>ssrf基础知识</h1><p>ssrf（server-side-request forgery，服务端请求伪造）是一种由攻击者构造请求，由服务器发起请求的安全漏洞，一般情况下，ssrf攻击的目标是外网无法访问的内网系统（因为是由于服务器发起的请求，所以服务器能够请求与自身相连而与外网隔绝的内部系统）。</p>
+<h2 id="ssrf的成因"><a href="#ssrf的成因" class="headerlink" title="ssrf的成因"></a>ssrf的成因</h2><p>ssrf漏洞形成的原因大都是由于<strong>服务端提供了从其他服务器应用获取数据的功能</strong>且<strong>没有对目标地址进行限制</strong></p>
+<h2 id="ssrf种类"><a href="#ssrf种类" class="headerlink" title="ssrf种类"></a>ssrf种类</h2><h3 id="显示对攻击者的响应（basic）：它显示对攻击者的响应"><a href="#显示对攻击者的响应（basic）：它显示对攻击者的响应" class="headerlink" title="显示对攻击者的响应（basic）：它显示对攻击者的响应"></a>显示对攻击者的响应（basic）：它显示对攻击者的响应</h3><p>因此在服务器获取攻击者要求的url后，它将把响应发送给攻击者</p>
+<p>发送给客户端，如传送一个url地址 会发挥这个网站的界面或者对应的html代码。</p>
+<h3 id="不显示响应（blind）：和上面正好相反，不会返回结果到客户端"><a href="#不显示响应（blind）：和上面正好相反，不会返回结果到客户端" class="headerlink" title="不显示响应（blind）：和上面正好相反，不会返回结果到客户端"></a>不显示响应（blind）：和上面正好相反，不会返回结果到客户端</h3><p>未从初次请求中获有关目标服务的任何信息</p>
+<p>要在这种情况下确认漏洞，攻击者必须使用burp等工具</p>
+<p> 这些工具可以通过强制服务器向攻击者控制的服务器发出DNS或HTTP请求来确认服务器是易受攻击的。这种ssrf通常易于验证，但难以利用。 </p>
+<h3 id="semi-ssrf：与blind相似，这种ssrf不会返回相关结果请求的所有详情信息，但是会暴露一些数据。"><a href="#semi-ssrf：与blind相似，这种ssrf不会返回相关结果请求的所有详情信息，但是会暴露一些数据。" class="headerlink" title="semi-ssrf：与blind相似，这种ssrf不会返回相关结果请求的所有详情信息，但是会暴露一些数据。"></a>semi-ssrf：与blind相似，这种ssrf不会返回相关结果请求的所有详情信息，但是会暴露一些数据。</h3><p>这可能是部分数据或错误信息，他们为攻击者提供了更多的信息。</p>
+<p> 有时，关于请求的元数据（例如响应时间）也可以视为Semi-ssrf，因为它们允许攻击者验证请求是否成功。这种ssrf通常足以验证漏洞，但并不总是能够提取敏感数据。 </p>
+<h2 id="常见的内网ip段"><a href="#常见的内网ip段" class="headerlink" title="常见的内网ip段"></a>常见的内网ip段</h2><p>局域网地址范围分为三类，以下ip段为内网ip段</p>
+<p>C类：192.168.0.0 - 192.168.255.255 </p>
+<p>B类：172.16.0.0 - 172.31.255.255 </p>
+<p>A类：10.0.0.0 - 10.255.255.255</p>
+<h2 id="一些知识点"><a href="#一些知识点" class="headerlink" title="一些知识点"></a>一些知识点</h2><p>url的格式如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scheme://user:pass@host:port/path?query=value#fragment </span><br><span class="line">// 其中scheme 可以是gopher dict file ftp ftps http https imap imaps pop3 pop3s smtp smtps telnet tftp</span><br></pre></td></tr></table></figure>
+
+<p>当我们发现ssrf漏洞的时候，我们首先要做的事情就是测试所有可用的url伪协议</p>
+<p>一些常用的url伪协议</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> file:///  -- 本地文件传输协议，主要用于访问本地计算机中的文件 </span><br><span class="line"></span><br><span class="line">dict://   -- 字典服务器协议，dict是基于查询相应的TCP协议，服务器监听端口2628 </span><br><span class="line"></span><br><span class="line">sftp://   -- SSH文件传输协议（SSH File Transfer Protocol），或安全文件传输协议（Secure File Transfer Protocol）</span><br><span class="line"></span><br><span class="line"> ldap://   -- 轻量级目录访问协议。它是IP网络上的一种用于管理和访问分布式目录信息服务的应用程序协议 </span><br><span class="line"></span><br><span class="line">tftp://   -- 基于lockstep机制的文件传输协议，允许客户端从远程主机获取文件或将文件上传至远程主机</span><br><span class="line"></span><br><span class="line"> gopher:// -- 互联网上使用的分布型的文件搜集获取网络协议，出现在http协议之前 </span><br></pre></td></tr></table></figure>
+
+<h3 id="gopher协议"><a href="#gopher协议" class="headerlink" title="gopher协议"></a>gopher协议</h3><p>gopher协议是一个在http协议诞生前用来访问internet资源的协议，可以理解为http协议的前身或者简化版，虽然很古老但现在很多库还支持gopher协议而且gppher协议功能很强大</p>
+<p>他可是实现多个数据包整合发送，然后gopher服务器将多个数据包捆绑这发送到客户端，这就是他的菜单相应，比如使用一条gopher协议的curl指令就能操作mysql或者完成对redis的攻击等等</p>
+<p>gopher协议使用tcp可靠连接</p>
+<p>gopher url格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gopher://&lt;host&gt;:&lt;port&gt;/&lt;gopher-path&gt;</span><br></pre></td></tr></table></figure>
+
+<p>port默认是70</p>
+<p> 如果发起post请求，回车换行需要使用%0d%0a，如果多个参数，参数之间的&amp;也需要进行URL编码 </p>
+<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><p>gopher协议在各个编程语言中的限制</p>
+<p> <img src="https://pic2.zhimg.com/80/v2-ea9bb9538044933ac3c918d5a56f2d69_1440w.jpg" alt="img"> </p>
+<p>gopher协议格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">URL:gopher://&lt;host&gt;:&lt;port&gt;/&lt;gopher-path&gt;_后接TCP数据流</span><br></pre></td></tr></table></figure>
+
+<h3 id="gopher协议在ssrf中的利用"><a href="#gopher协议在ssrf中的利用" class="headerlink" title="gopher协议在ssrf中的利用"></a>gopher协议在ssrf中的利用</h3><p>出现ssrf的地方如果没有对协议，ip，端口这些东西做一些限制，则可以用来探测内网存活的ip及开放的端口、</p>
+<p>读取任意文件、 利用phar 协议触发反序列化、攻击内网redis&#x2F;memcache&#x2F;mysql 及web 应用fastcgi 或其他服务等等。 </p>
+<p>这里gopher协议在其中占了很重要的角色</p>
+<h1 id="ssrf-lab-basics"><a href="#ssrf-lab-basics" class="headerlink" title="ssrf-lab basics"></a>ssrf-lab basics</h1><p>看一下导致产生ssrf的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">	<span class="comment">// 创建一个新的curl资源</span></span><br><span class="line">	<span class="variable">$ch</span> = <span class="title function_ invoke__">curl_init</span>(); </span><br><span class="line"><span class="comment">// set 设置访问的url</span></span><br><span class="line"><span class="title function_ invoke__">curl_setopt</span>(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$_POST</span>[<span class="string">&quot;handler&quot;</span>]); </span><br><span class="line"></span><br><span class="line"><span class="comment">//return the transfer as a string </span></span><br><span class="line"><span class="title function_ invoke__">curl_setopt</span>(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// $output contains the output string </span></span><br><span class="line"><span class="variable">$output</span> = <span class="title function_ invoke__">curl_exec</span>(<span class="variable">$ch</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// close curl resource to free up system resources </span></span><br><span class="line"><span class="title function_ invoke__">curl_close</span>(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$output</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="curl-init-函数"><a href="#curl-init-函数" class="headerlink" title="curl_init()函数"></a>curl_init()函数</h5><p>如果他没有对我们输入的url进行一些过滤那么我们就可以攻击一下我们访问不到并且这个服务器可以访问的到的网站</p>
+<p>这一关没有对我们输入的url进行任何的过滤</p>
+<p>先测试一下<a target="_blank" rel="noopener" href="http://127.0.0.1/">http://127.0.0.1</a></p>
+<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1656986029558.png" alt="1656986029558"></p>
+<p>看到利用curl函数产生的ssrf漏洞把网页代码返回给我们了</p>
+<p>这里可以用file伪协议来查看本文件</p>
+<p><img src="C:\Users\kangkang\AppData\Roaming\Typora\typora-user-images\1656987071756.png" alt="1656987071756"></p>
+<h1 id="advanced1"><a href="#advanced1" class="headerlink" title="advanced1"></a>advanced1</h1><p>​	</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="variable">$handler</span> = <span class="variable">$_POST</span>[<span class="string">&quot;handler&quot;</span>];</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;#^https?://#i&#x27;</span>, <span class="variable">$handler</span>) !== <span class="number">1</span>) &#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Wrong scheme! You can only use http or https!&quot;</span>;</span><br><span class="line">	<span class="keyword">die</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;#^https?://10.0.0.3#i&#x27;</span>, <span class="variable">$handler</span>) === <span class="number">1</span>) &#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;Restricted area!&quot;</span>;</span><br><span class="line">	<span class="keyword">die</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create curl resource </span></span><br><span class="line"><span class="variable">$ch</span> = <span class="title function_ invoke__">curl_init</span>(); </span><br><span class="line"></span><br><span class="line"><span class="comment">// set url </span></span><br><span class="line"><span class="title function_ invoke__">curl_setopt</span>(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$_POST</span>[<span class="string">&quot;handler&quot;</span>]); </span><br><span class="line"></span><br><span class="line"><span class="comment">//return the transfer as a string </span></span><br><span class="line"><span class="title function_ invoke__">curl_setopt</span>(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// $output contains the output string </span></span><br><span class="line"><span class="variable">$output</span> = <span class="title function_ invoke__">curl_exec</span>(<span class="variable">$ch</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// close curl resource to free up system resources </span></span><br><span class="line"><span class="title function_ invoke__">curl_close</span>(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$output</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里他进行了一些过滤</p>
+<p>这里面他也过滤了10.0.0.3地址</p>
+<p>来测试一下</p>
+<p>Restricted area!</p>
+<p>返回这个 就是被过滤了</p>
+<p>但是ip地址有很多的表达方式，我们可以用那些表达方式来绕过。</p>
+<p>我们先来看看ip地址的表达方式</p>
+<p>众所周知ip地址是由四个字节组成的， 一旦包含了小数点，就必须考虑到大小端表示，因为这个会影响IP地址的解析。不过好在所有的网络地址都是大端表示法，只需要注意这一点即可，下面我们介绍IP地址的表达方式。 </p>
+<p>1  字符串：10.0.0.3</p>
+<p>2二进制：00001010 . 00000000 . 00000000 . 00000011</p>
+<p>3十六进制 ：0A.00.00.03</p>
+<p>4整数： 167772163</p>
+<p>还可以用0x0A000003表示ip地址</p>
+<p>其他常见绕过方法</p>
+<p>DNS泛域名</p>
+<p>xip.io和xip.name这两个dns泛域名，实现绕过对的方法是，你在你想访问的ip地址后面添加这两个泛域名，这两个域名会从发送的请求中提取真正想访问的ip地址，然后在响应报文中返回</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2022/07/07/BJDCTF2020Cookie-is-so-stable-md/" data-toggle="tooltip" data-placement="top"
+                           title="BJDCTF2020Cookie is so stable.md">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2022/07/01/buu-upload简单题-md/" data-toggle="tooltip" data-placement="top"
+                           title="buu-upload简单题.md">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ssrf%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">ssrf基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ssrf%E7%9A%84%E6%88%90%E5%9B%A0"><span class="toc-text">ssrf的成因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssrf%E7%A7%8D%E7%B1%BB"><span class="toc-text">ssrf种类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E5%AF%B9%E6%94%BB%E5%87%BB%E8%80%85%E7%9A%84%E5%93%8D%E5%BA%94%EF%BC%88basic%EF%BC%89%EF%BC%9A%E5%AE%83%E6%98%BE%E7%A4%BA%E5%AF%B9%E6%94%BB%E5%87%BB%E8%80%85%E7%9A%84%E5%93%8D%E5%BA%94"><span class="toc-text">显示对攻击者的响应（basic）：它显示对攻击者的响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E6%98%BE%E7%A4%BA%E5%93%8D%E5%BA%94%EF%BC%88blind%EF%BC%89%EF%BC%9A%E5%92%8C%E4%B8%8A%E9%9D%A2%E6%AD%A3%E5%A5%BD%E7%9B%B8%E5%8F%8D%EF%BC%8C%E4%B8%8D%E4%BC%9A%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C%E5%88%B0%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">不显示响应（blind）：和上面正好相反，不会返回结果到客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#semi-ssrf%EF%BC%9A%E4%B8%8Eblind%E7%9B%B8%E4%BC%BC%EF%BC%8C%E8%BF%99%E7%A7%8Dssrf%E4%B8%8D%E4%BC%9A%E8%BF%94%E5%9B%9E%E7%9B%B8%E5%85%B3%E7%BB%93%E6%9E%9C%E8%AF%B7%E6%B1%82%E7%9A%84%E6%89%80%E6%9C%89%E8%AF%A6%E6%83%85%E4%BF%A1%E6%81%AF%EF%BC%8C%E4%BD%86%E6%98%AF%E4%BC%9A%E6%9A%B4%E9%9C%B2%E4%B8%80%E4%BA%9B%E6%95%B0%E6%8D%AE%E3%80%82"><span class="toc-text">semi-ssrf：与blind相似，这种ssrf不会返回相关结果请求的所有详情信息，但是会暴露一些数据。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%86%85%E7%BD%91ip%E6%AE%B5"><span class="toc-text">常见的内网ip段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="toc-text">一些知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gopher%E5%8D%8F%E8%AE%AE"><span class="toc-text">gopher协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%99%90%E5%88%B6"><span class="toc-text">限制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gopher%E5%8D%8F%E8%AE%AE%E5%9C%A8ssrf%E4%B8%AD%E7%9A%84%E5%88%A9%E7%94%A8"><span class="toc-text">gopher协议在ssrf中的利用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ssrf-lab-basics"><span class="toc-text">ssrf-lab basics</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#curl-init-%E5%87%BD%E6%95%B0"><span class="toc-text">curl_init()函数</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#advanced1"><span class="toc-text">advanced1</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hexo 2022
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://example.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>
