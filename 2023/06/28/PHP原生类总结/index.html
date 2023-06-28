@@ -18,7 +18,7 @@
 
 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="keyword">new</span> <span class="built_in">Exception</span>(<span class="string">&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>));</span><br></pre></td></tr></table></figure>
 
-<p><img src="/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E6%80%BB%E7%BB%93.assets/image-20230627204114482.png" alt="image-20230627204114482"></p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/pCdWth9"><img src="https://s1.ax1x.com/2023/06/28/pCdWth9.png" alt="pCdWth9.png"></a></p>
 <h2 id="绕过哈希强比较"><a href="#绕过哈希强比较" class="headerlink" title="绕过哈希强比较"></a>绕过哈希强比较</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a = new Error(&quot;payload&quot;,1);</span><br><span class="line">echo $a;</span><br></pre></td></tr></table></figure>
 
 <p>他在tostring的时候会返回保存信息 这时候如果在同一行上的话就会返回一模一样的报错信息  这样就可以绕过 </p>
