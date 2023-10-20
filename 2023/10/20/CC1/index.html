@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="java 反序列化 cc1"><meta name="keywords" content="java 反序列化 cc1"><meta name="author" content="kkkl"><meta name="copyright" content="kkkl"><title>java 反序列化 cc1 | kkkl's Blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  hexoVersion: '6.3.0'
+} </script><meta name="generator" content="Hexo 6.3.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://s1.ax1x.com/2023/06/16/pCQFH00.jpg"></div><div class="author-info__name text-center">kkkl</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">8</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">8</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" target="_blank" rel="noopener" href="https://gh0st.vip/">gh0st</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://s1.ax1x.com/2023/06/14/pCn3c6O.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">kkkl's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a><a class="site-page" href="/About">Ablout</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">java 反序列化 cc1</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2023-10-20</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>cc1这条链子学了很长时间 写一遍文章仔细分析一下</p>
+<p> 这条链子的终点就是<code>InvokerTransformer</code>的transform方法</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piFwTde.png" alt="piFwTde.png"></p>
+<p>在这里 他这个方法其实利用反射实现了一个任意方法调用的功能</p>
+<p>可以先利用反射来先构造一下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Runtime</span> <span class="variable">runtime</span> <span class="operator">=</span> Runtime.getRuntime();</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Runtime.class;</span><br><span class="line"></span><br><span class="line"><span class="type">Method</span> <span class="variable">getRuntimemethod</span> <span class="operator">=</span> c.getMethod(<span class="string">&quot;exec&quot;</span>, String.class);</span><br><span class="line">getRuntimemethod.invoke(runtime,<span class="string">&quot;calc&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://z1.ax1x.com/2023/10/20/piFwbid.png" alt="piFwbid.png"></p>
+<p>但是这里有有个问题</p>
+<p>我们序列化的时候是无法去直接写入实例化一个Runtime对象的  只能利用现有的代码实现构造 所以我们就需要通过其他的地方去实例化一个Runtime 对象的</p>
+<p>查找 transform 函数其他地方用法 可以看到有个<code>ChainedTransformer</code> 类也调用了 transform 用法</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piFwLRI.png" alt="piFwLRI.png"></p>
+<p>他这里去循环的调用了transform 方法 所以我们可以利用这个类的transform方法去循环调用<code>invokerTransformer</code>类的transform 方法来反射出一个	Runtime 对象</p>
+<p>ChainedTransformer的构造函数接受Transformer 格式的数组</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piFwjQP.png" alt="piFwjQP.png"></p>
+<p>先创建一个 Transformer 格式的数组</p>
+<p>这里怎么实现利用反射去创建一个Runtime 对象呢</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piFwvsf.png" alt="piFwvsf.png"></p>
+<p>利用上面这块代码来实现</p>
+<p>稍微说一下上面这段代码的意思</p>
+<p>先是获取了Runtime的class对象 然后又调用了getRuntime静态方来创建一个Runtime对象 这里由于getRuntime是一个静态方法 在反射中 invoke 执行命令的时候 如果是一个静态方法 我们需要传入类的class 对象进去 如果不是一个静态方法的话我们需要传入一个类的实例化对象进去</p>
+<p>所以我们可以通过这种方法来实现反射出一个Runtime的对象</p>
+<p>那具体我们如何利用InvokerTransformer的transformer函数来构造出一个	Runtime对象呢</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piF0SeS.png" alt="piF0SeS.png"></p>
+<p>我们可以看到出现了报错 显示 class类不存在getRuntime 方法具体看一下InvokeTransformer的transformer的代码</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piF09oQ.png" alt="piF09oQ.png"></p>
+<p>看到这里他利用的是getClass()函数去调用的getMethod 这个getClass 函数正常的利用的时候就是利用实例对象去获取类的class对象</p>
+<p>但是这里我们传入的是Runtime 的class对象 他经过getClass函数的话会变成Class.class 也就是Class类的Class对象</p>
+<p><img src="https://z1.ax1x.com/2023/10/20/piF0Pij.png" alt="piF0Pij.png"></p>
+<p>所以自然而然他会显示报错</p>
+<p>The method ‘getRuntime’ on ‘class java.lang.Class’ does not exist</p>
+<p>这里Class 类中没有getRumtime 方法</p>
+<p>那怎么办呢 我们没有办法直接去使用Runtime 对象 因为他没有去实现Serializable接口<br>这里可以利用反射去调用反射来实现</p>
+<p>先来写代码来看一下更加直观</p>
+<p><img src="/CC1.assets/image-20231019221841227.png" alt="image-20231019221841227"></p>
+<p>可以对比上面注释的代码来对应这来写这个</p>
+<p>写成链子的格式的话就是</p>
+<p>但是上面这串代码 是我们自己写的并没有调用这么多次InvokerTransformer 的transform方法来执行反射 </p>
+<p>所以需要找一个可以循环调用transform方法的函数来调用它</p>
+<p>查找transfom的调用方法 发现在ChainedTransformer中调用了transform方法</p>
+<p><img src="/CC1.assets/image-20231020203654511.png" alt="image-20231020203654511"></p>
+<p>这个里面并且产生了循环调用  每次返回的object 又被当作了下一个transform的参数</p>
+<p>尝试来构造一下</p>
+<p><img src="/CC1.assets/image-20231020203908387.png" alt="image-20231020203908387"></p>
+<p>弹出了计算机</p>
+<p>所以现在就可以去看哪里调用了</p>
+<p>transformers函数 就可以调用到ChainedTransformer的transformers函数</p>
+<p>可以看到 TransformedMap中调用了transformer函数</p>
+<p><img src="/CC1.assets/image-20231020204516203.png" alt="image-20231020204516203"></p>
+<p>并且里面的valueTransfomer是可控的</p>
+<p><img src="/CC1.assets/image-20231020204601738.png" alt="image-20231020204601738"></p>
+<p>但是构造函数是受保护的方法 里面有个decorate函数可以去创建一个Transfomer实例</p>
+<p><img src="/CC1.assets/image-20231020205222641.png" alt="image-20231020205222641"></p>
+<p>由于checkSetValue是受保护的方法不可以直接在外部调用</p>
+<p>这里使用反射的方式来调用checkSetValue</p>
+<p><img src="/CC1.assets/image-20231020205457247.png" alt="image-20231020205457247"></p>
+<p>发现成功调用</p>
+<p>那现在看具体哪里可以调用到CheckSetvalue</p>
+<p>这里只有一个调用了CheckSetvalue 是AbstractinputCheckMapDecorator 、</p>
+<p><img src="/CC1.assets/image-20231020210617421.png" alt="image-20231020210617421"></p>
+<p>然后看到这里类 AbstractInputCheckedMapDecorator 是TransformedMap的父类</p>
+<p><img src="/CC1.assets/image-20231020213307410.png" alt="image-20231020213307410"></p>
+<p>然后看到setValue是 内部类 MapEntry 的方法</p>
+<p>这里其实是重写了 MapEntry 的setValue方法</p>
+<p>可以看一下</p>
+<p>点击</p>
+<p><img src="/CC1.assets/image-20231020213458765.png" alt="image-20231020213458765"></p>
+<p><img src="/CC1.assets/image-20231020213508090.png" alt="image-20231020213508090"></p>
+<p><img src="/CC1.assets/image-20231020213529250.png" alt="image-20231020213529250"></p>
+<p>是Map Entry的setValue方法</p>
+<p>证明了是重写了setValue方法</p>
+<p>又因为TransfromerMap继承了 AbstractInputCheckedMapDecorator 所以也同样继承了 内部类 MapEntry的setValue方法所以当我们使用 TransfromerMap类型的变量 并且调用 setValue 方法的时候 调用的就是重写之后 的这个 setValue 方法</p>
+<p><img src="/CC1.assets/image-20231020214158812.png" alt="image-20231020214158812"></p>
+<p><img src="/CC1.assets/image-20231020214214181.png" alt="image-20231020214214181"></p>
+<p>这里有个我疑惑的地方就是我必须在类型里面去写入Map 还有必须去定义泛型才不会报错</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;Object,Object&gt; Tsm =  TransformedMap.decorate(map, chainedTransformer, chainedTransformer);</span><br></pre></td></tr></table></figure>
+
+<p>先把这个问题留一下</p>
+<p>然后继续去看哪里调用了 setValue方法</p>
+<p>发现 AnnotationInvocationHandler这个类调用了setValue方法</p>
+<p>并且是readObject中调用了setValue方法</p>
+<p>所以我们只需要控制<img src="/CC1.assets/image-20231020214702555.png" alt="image-20231020214702555"></p>
+<p>memberValue这个值的类型是TransformedMap 的类型的话就会 去调用 AbstractInputCheckedMapDecorator的 SetValue方法</p>
+<p>但是这里同样有个疑点就是我不知道具体哪个地方赋值类parent的值</p>
+<p><img src="/CC1.assets/image-20231020215811154.png" alt="image-20231020215811154"></p>
+<p>虽然parent被赋值成了TransFormedMap</p>
+<p>继续往下看把</p>
+<p>AnnotationInvocationHandler中的 readObject 方法调用了setValue方法</p>
+<p>进入方法具体看一下</p>
+<p>由于这个 AnnotationInvocationHandler 类的构造函数是默认类型 无法去通过new 去创建一个实例</p>
+<p>所以同样通过反射去创建</p>
+<p><img src="/CC1.assets/image-20231020221248551.png" alt="image-20231020221248551"></p>
+<p>但是这里还有一些问题</p>
+<p><img src="/CC1.assets/image-20231020221313777.png" alt="image-20231020221313777"></p>
+<p>需要先进入前面两个判断才能进入setValue方法</p>
+<p><img src="/CC1.assets/image-20231020221717021.png" alt="image-20231020221717021"></p>
+<p>先获取到type的实例 然后又获取到它的成员变量 </p>
+<p>继续往下 他便利entryset的时候获取的是 键值对的格式</p>
+<p>String name &#x3D; memberValue.getKey(); </p>
+<p>然后获取到键名</p>
+<p><img src="/CC1.assets/image-20231020221926187.png" alt="image-20231020221926187"></p>
+<p>也就说获取到这里的键名1</p>
+<p><img src="/CC1.assets/image-20231020222005439.png" alt="image-20231020222005439"></p>
+<p>这里去判断我们获取到的成员变量里面是否又 我们获取到的键名1 </p>
+<p>显然我们的type里面是没有的 可以去看一下</p>
+<p><img src="/CC1.assets/image-20231020222057049.png" alt="image-20231020222057049"></p>
+<p>Override里面是没有成员变量的 这里我们需要找一个有成员变量的注解</p>
+<p><img src="/CC1.assets/image-20231020222137772.png" alt="image-20231020222137772"></p>
+<p>看到Target注解里面有个成员变量的</p>
+<p>现在赋值成Target</p>
+<p><img src="/CC1.assets/image-20231020222239574.png" alt="image-20231020222239574"></p>
+<p><img src="/CC1.assets/image-20231020222359987.png" alt="image-20231020222359987"></p>
+<p>看到这里memberTypes 属性里面有个键名是注解Tranget里面的value 所以我们在map中加一个value就可以进入这个if</p>
+<p><img src="/CC1.assets/image-20231020222523968.png" alt="image-20231020222523968"></p>
+<p>成功进入</p>
+<p><img src="/CC1.assets/image-20231020222848084.png" alt="image-20231020222848084"></p>
+<p>成功进入到memberValue.setValue </p>
+<p>但是这个setValue里面的值就是我们需要的Runtime.class </p>
+<p>所以这里又需要调用另一个类</p>
+<p>ConstantTransformer 这个类 </p>
+<p>里面有个构造函数和transform 函数</p>
+<p><img src="/CC1.assets/image-20231020223215457.png" alt="image-20231020223215457"></p>
+<p>看下这个代码</p>
+<p>构造函数是把我们传入的东西赋值为iConstant 然后</p>
+<p>transform函数是无论我们传入什么值都会去返回这个iConstant</p>
+<p>写成这种形式</p>
+<p><img src="/CC1.assets/image-20231020223556646.png" alt="image-20231020223556646"></p>
+<p>所以这样无论我们给他传入什么值 他都会返回的是我们给他的c 也就是Runtime.class 然后 new ConstantTransformer(c) 的transfome 函数返回的就是Runtime.class 然后就会继续往下去执行我们后面的InvokerTransformer 之后的东西 这样就绕过了<img src="/CC1.assets/image-20231020223804033.png" alt="image-20231020223804033"></p>
+<p>不可控的问题</p>
+<p><img src="/CC1.assets/image-20231020223838032.png" alt="image-20231020223838032"></p>
+<p>这样整个链子就完成了</p>
+<p>虽然里面有几个坑</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">kkkl</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/10/20/CC1/">http://example.com/2023/10/20/CC1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-cc1/">java 反序列化 cc1</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2023/10/16/2023%20%E9%A6%99%E5%B1%B1%E6%9D%AF/"><span>2023香山杯 web</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(https://s1.ax1x.com/2023/06/14/pCn3c6O.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2023 By kkkl</div><div class="framework-info"><span>Driven - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.1"></script><script src="/js/fancybox.js?version=1.9.1"></script><script src="/js/sidebar.js?version=1.9.1"></script><script src="/js/copy.js?version=1.9.1"></script><script src="/js/fireworks.js?version=1.9.1"></script><script src="/js/transition.js?version=1.9.1"></script><script src="/js/scroll.js?version=1.9.1"></script><script src="/js/head.js?version=1.9.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
